@@ -3,6 +3,9 @@
 
 # Created by https://www.gitignore.io/api/java,scala,maven,sbt,jetbrains
 
+.bloop
+.metals
+
 ### Java ###
 # Compiled class file
 *.class
