@@ -1,0 +1,16 @@
+{
+  "list_field" : [
+    10, 11, 12
+  ],
+  "string_field" : "foo",
+  "@template" : "argument1: ${list_field}, argument2: ${string_field}",
+  "@message" : "argument1: list_field=List(10,11,12), argument2=foo",
+  "@event" : {
+    "class" : "class",
+    "logger" : "logger",
+    "line" : 12,
+    "file" : "file",
+    "thread" : {"id":  1, "name":  "sss"},
+    "level": "trace", "timestamp" : 111, "datetime" : "timestamp"
+  }
+}
