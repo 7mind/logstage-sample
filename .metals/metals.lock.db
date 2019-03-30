@@ -1,6 +1,0 @@
-#FileLock
-#Sat Mar 30 01:34:32 EET 2019
-hostName=192.168.31.244
-id=169cbce0dc27a85c78882a174dddfc7f228848a532f
-method=file
-server=192.168.31.244\:63025
