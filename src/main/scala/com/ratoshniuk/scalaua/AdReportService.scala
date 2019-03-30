@@ -14,7 +14,7 @@ import scala.util.Random
 class AdReportService(logger: IzLogger)(implicit AsyncIO: BIOAsync[IO])
 {
   def pullReports(userId: UserId, adPlatform: AdPlatform) : IO[Nothing, Unit] = {
-    val granularLog = LogstageZIO.withFiberId(
+    val granularLog = LogBIO.fromLogger[IO](
       logger("userId" -> userId.value, "ad" -> adPlatform.toString)
     )
     for {
