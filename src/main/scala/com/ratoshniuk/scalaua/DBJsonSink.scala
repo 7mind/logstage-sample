@@ -43,47 +43,14 @@ class DBJsonSink
 
   private def insertIntoDB(entries : List[(Long, String)]) : IO[Nothing, Unit] = {
     import doobie.implicits._
-    val q = Update[(Long, String)]("""INSERT INTO "public"."structured_logs"("timestamp", "log") VALUES(TO_TIMESTAMP(?::double precision / 1000), jsonb(?))""".stripMargin).updateMany(NonEmptyList.fromListUnsafe(entries))
+    val sqlQuery =
+      """
+        |INSERT INTO "public"."structured_logs"
+        | ("timestamp", "log")
+        | VALUES(TO_TIMESTAMP(?::double precision / 1000), jsonb(?))
+        | """.stripMargin
+    val q = Update[(Long, String)](sqlQuery).updateMany(NonEmptyList.fromListUnsafe(entries))
     pgConnector.query(q).void
   }
 }
 
-import doobie.free.connection.ConnectionIO
-import doobie.hikari.HikariTransactor
-import doobie.syntax.connectionio._
-import logstage.IzLogger
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
-
-final class PostgresConnector[F[+_, +_]: BIO: BIOAsync]
-(
-  blockingIOExecutionContext: ExecutionContext
-)(implicit cs: ContextShift[cats.effect.IO])    {
-
-  import scala.concurrent.duration._
-
-  def query[T](query: ConnectionIO[T]): F[Nothing, T] = {
-    for {
-      res <- {
-        BIO[F].syncThrowable(query.transact(mkTransactor).unsafeRunSync())
-          .catchAll(f => BIO[F].terminate(f))
-      }
-    } yield res
-  }
-
-  private[this] lazy val mkTransactor: HikariTransactor[cats.effect.IO] = {
-    val ds = new HikariDataSource(cfg)
-    HikariTransactor.apply[cats.effect.IO](ds, blockingIOExecutionContext, blockingIOExecutionContext)
-  }
-
-  private val cfg : HikariConfig = {
-    val config = new HikariConfig()
-    config.setJdbcUrl("jdbc:postgresql://localhost/postgres")
-    config.setUsername("postgres")
-    config.setPassword("postgres")
-    config.setDriverClassName("org.postgresql.Driver")
-    config
-  }
-
-}
