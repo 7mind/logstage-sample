@@ -4,15 +4,13 @@ import com.github.pshirshov.izumi.functional.bio.BIOAsync
 import com.github.pshirshov.izumi.logstage.api.IzLogger
 import com.ratoshniuk.logstage.AdReportService.AdPlatform.BadGuys
 import com.ratoshniuk.logstage.AdReportService.{AdPlatform, UserId}
+import logstage.LogBIO
+import zio.clock.Clock
 import zio.duration.Duration.Finite
-import zio.{IO, Schedule}
+import zio.{IO, Schedule, ZIO}
 
 import scala.concurrent.duration._
 import scala.util.Random
-import com.ratoshniuk.logstage.AdReportService.AdPlatform.BadGuys
-import logstage.LogBIO
-import zio.clock.Clock
-import zio.{IO, Schedule, ZIO}
 
 class AdReportService(logger: IzLogger)(implicit async: BIOAsync[IO])
 {
