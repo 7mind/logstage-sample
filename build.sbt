@@ -21,7 +21,7 @@ libraryDependencies ++= Seq(
   //logstage
   R.logstage_rendering_circe,
   R.logstage_core,
-  
+
   //postgres
   "org.tpolecat" %% "doobie-core"      % "0.6.0"
   , "org.tpolecat" %% "doobie-hikari"    % "0.6.0"
