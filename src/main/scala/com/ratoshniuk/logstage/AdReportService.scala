@@ -1,6 +1,7 @@
 package com.ratoshniuk.logstage
 
 import com.github.pshirshov.izumi.functional.bio.BIOAsync
+import com.github.pshirshov.izumi.logstage.api.IzLogger
 import com.ratoshniuk.logstage.AdReportService.{AdPlatform, UserId}
 import zio.duration.Duration.Finite
 import zio.{DefaultRuntime, IO, Schedule, ZIO}
@@ -8,11 +9,11 @@ import zio.{DefaultRuntime, IO, Schedule, ZIO}
 import scala.concurrent.duration._
 import scala.util.Random
 
-class AdReportService(implicit async: BIOAsync[IO])
+class AdReportService(logger: IzLogger)(implicit async: BIOAsync[IO])
 {
   def pullReports(userId: UserId, adPlatform: AdPlatform) : ZIO[DefaultRuntime#Environment, Nothing, Unit] = {
     for {
-      _        <- IO.succeed(println(s"start pulling for $userId and $adPlatform"))
+      _        <- IO.succeed(logger.info(s"start pulling for $userId amd $adPlatform"))
       readIO    = (readFromNetwork(userId, adPlatform) repeat  processRule).unit
       writeIO   = (putIntoS3(adPlatform) repeat  processRule).unit
       _        <- zio.ZIO.raceAll(readIO, List(writeIO))

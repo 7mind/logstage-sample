@@ -2,18 +2,21 @@ package com.ratoshniuk.logstage
 
 import java.util.concurrent.{Executors, LinkedBlockingQueue, ThreadPoolExecutor, TimeUnit}
 
+import com.github.pshirshov.izumi.functional.bio.BIOAsync
 import com.github.pshirshov.izumi.functional.bio.impl.BIOAsyncZio
-import com.github.pshirshov.izumi.functional.bio.{BIO, BIOAsync, BIORunner}
+import com.github.pshirshov.izumi.logstage.api.IzLogger
+import com.github.pshirshov.izumi.logstage.api.Log.Level.Trace
+import com.github.pshirshov.izumi.logstage.sink.ConsoleSink
 import com.ratoshniuk.logstage.AdReportService.{AdPlatform, UserId}
-import zio.{DefaultRuntime, IO}
 import zio.clock.Clock
+import zio.{DefaultRuntime, IO}
 
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
 
-object Runner extends App with EffectRuntime  {
-  val service = new AdReportService
+object Runner extends App with EffectRuntime with WithLogger {
+  val service = new AdReportService(logger)
 
   val adPlatforms = List(AdPlatform.BadGuys, AdPlatform.GoodFellows)
 
@@ -22,25 +25,37 @@ object Runner extends App with EffectRuntime  {
     id => service.pullReports(UserId(id), Random.shuffle(adPlatforms).head)
   }.unit
 
+  logger.info("start running app")
+
   zioRunner.unsafeRun(eff)
 
   sys.exit(0)
 }
 
+
+trait WithLogger {
+  val textSink = ConsoleSink.text(colored = true)
+
+  val sinks = List(textSink)
+
+  val logger: IzLogger = IzLogger.apply(Trace, sinks)
+}
+
+
 trait EffectRuntime {
 
-  val cpuPool : ThreadPoolExecutor = {
+  val cpuPool: ThreadPoolExecutor = {
     Executors.newFixedThreadPool(8).asInstanceOf[ThreadPoolExecutor]
   }
 
-  val zioPool : ThreadPoolExecutor = {
+  val zioPool: ThreadPoolExecutor = {
     val cores = Runtime.getRuntime.availableProcessors.max(2)
-    new ThreadPoolExecutor(cores, cores, 0L, TimeUnit.MILLISECONDS,  new LinkedBlockingQueue[Runnable])
+    new ThreadPoolExecutor(cores, cores, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue[Runnable])
   }
 
-  val blockingIO : ExecutionContext = ExecutionContext.fromExecutorService(zioPool): ExecutionContext
+  val blockingIO: ExecutionContext = ExecutionContext.fromExecutorService(zioPool): ExecutionContext
 
   val zioRunner = new DefaultRuntime {}
 
-  implicit val async: BIOAsync[IO] =  new BIOAsyncZio(Clock.Live)
+  implicit val async: BIOAsync[IO] = new BIOAsyncZio(Clock.Live)
 }
