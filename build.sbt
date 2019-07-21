@@ -13,9 +13,12 @@ resolvers += Resolver.sonatypeRepo("releases")
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9")
 
-// LogStage machinery
 libraryDependencies ++= Seq(
   R.fundamentals_bio,
   IzumiDeps.R.zio_core,
-  IzumiDeps.R.zio_interop
+  IzumiDeps.R.zio_interop,
+
+  //logstage
+  R.logstage_rendering_circe,
+  R.logstage_core
 )

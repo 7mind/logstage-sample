@@ -13,7 +13,7 @@ import scala.util.Random
 
 
 object Runner extends App with EffectRuntime  {
-val service = new AdReportService
+  val service = new AdReportService
 
   val adPlatforms = List(AdPlatform.BadGuys, AdPlatform.GoodFellows)
 
