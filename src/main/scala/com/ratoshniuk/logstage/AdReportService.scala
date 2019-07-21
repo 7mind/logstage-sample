@@ -1,7 +1,7 @@
-package com.ratoshniuk.scalaua
+package com.ratoshniuk.logstage
 
 import com.github.pshirshov.izumi.functional.bio.BIOAsync
-import com.ratoshniuk.scalaua.AdReportService.{AdPlatform, UserId}
+import com.ratoshniuk.logstage.AdReportService.{AdPlatform, UserId}
 import zio.duration.Duration.Finite
 import zio.{IO, Schedule}
 

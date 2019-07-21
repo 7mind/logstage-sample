@@ -1,10 +1,10 @@
-package com.ratoshniuk.scalaua
+package com.ratoshniuk.logstage
 
 import java.util.concurrent.{Executors, LinkedBlockingQueue, ThreadPoolExecutor, TimeUnit}
 
 import com.github.pshirshov.izumi.functional.bio.impl.BIOAsyncZio
 import com.github.pshirshov.izumi.functional.bio.{BIO, BIOAsync, BIORunner}
-import com.ratoshniuk.scalaua.AdReportService.{AdPlatform, UserId}
+import com.ratoshniuk.logstage.AdReportService.{AdPlatform, UserId}
 import zio.IO
 import zio.clock.Clock
 

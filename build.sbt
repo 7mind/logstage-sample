@@ -1,7 +1,7 @@
 import com.github.pshirshov.izumi.sbt.deps.Izumi.R
 import com.github.pshirshov.izumi.sbt.deps.IzumiDeps
 
-name := "scala-ua-2019"
+name := "logstage-sample"
 
 version := "0.1"
 
