@@ -34,9 +34,13 @@ object Runner extends App with EffectRuntime with WithLogger {
 
 
 trait WithLogger {
+  this: EffectRuntime =>
+
   val textSink = ConsoleSink.text(colored = true)
 
-  val sinks = List(textSink)
+  val dbSink: DBJsonSink = new DBJsonSink(blockingIO)
+
+  val sinks = List(textSink, dbSink)
 
   val logger: IzLogger = IzLogger.apply(Trace, sinks)
 }
@@ -55,7 +59,7 @@ trait EffectRuntime {
 
   val blockingIO: ExecutionContext = ExecutionContext.fromExecutorService(zioPool): ExecutionContext
 
-  val zioRunner = new DefaultRuntime {}
+  implicit val zioRunner: DefaultRuntime = new DefaultRuntime {}
 
   implicit val async: BIOAsync[IO] = new BIOAsyncZio(Clock.Live)
 }
